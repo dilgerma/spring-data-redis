@@ -71,9 +71,9 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 
 			ZAddArgs args = null;
 
-			if (command.getIncr() != null || command.getUpsert() != null || command.getReturnTotalChanged() != null) {
+			if (command.getIncr().isPresent() || command.getUpsert().isPresent() || command.getReturnTotalChanged().isPresent()) {
 
-				if (ObjectUtils.nullSafeEquals(command.getIncr(), Boolean.TRUE)) {
+				if (command.getIncr().isPresent() && ObjectUtils.nullSafeEquals(command.getIncr().get(), Boolean.TRUE)) {
 
 					if (command.getTuples().size() > 1) {
 						throw new IllegalArgumentException("ZADD INCR must not contain more than one tuple.");
@@ -86,13 +86,13 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 							.map(value -> new NumericResponse<>(command, value));
 				}
 
-				if (ObjectUtils.nullSafeEquals(command.getReturnTotalChanged(), Boolean.TRUE)) {
+				if (command.getReturnTotalChanged().isPresent() && ObjectUtils.nullSafeEquals(command.getReturnTotalChanged().get(), Boolean.TRUE)) {
 					args = ZAddArgs.Builder.ch();
 				}
 
-				if (command.getUpsert() != null) {
+				if (command.getUpsert().isPresent()) {
 
-					if (command.getUpsert().equals(Boolean.TRUE)) {
+					if (command.getUpsert().get().equals(Boolean.TRUE)) {
 						args = ZAddArgs.Builder.nx();
 					} else {
 						args = ZAddArgs.Builder.xx();
@@ -187,7 +187,7 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 			Observable<List<Tuple>> result = Observable.empty();
 
 			if (ObjectUtils.nullSafeEquals(command.getDirection(), Direction.ASC)) {
-				if (ObjectUtils.nullSafeEquals(command.getWithScores(), Boolean.TRUE)) {
+				if (command.getWithScores().isPresent() && ObjectUtils.nullSafeEquals(command.getWithScores().get(), Boolean.TRUE)) {
 
 					result = cmd.zrangeWithScores(command.getKey().array(), command.getRange().getLowerBound(),
 							command.getRange().getUpperBound()).map(sc -> (Tuple) new DefaultTuple(sc.value, sc.score)).toList();
@@ -198,7 +198,7 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 							.map(value -> (Tuple) new DefaultTuple(value, Double.NaN)).toList();
 				}
 			} else {
-				if (ObjectUtils.nullSafeEquals(command.getWithScores(), Boolean.TRUE)) {
+				if (command.getWithScores().isPresent() && ObjectUtils.nullSafeEquals(command.getWithScores().get(), Boolean.TRUE)) {
 					result = cmd.zrevrangeWithScores(command.getKey().array(), command.getRange().getLowerBound(),
 							command.getRange().getUpperBound()).map(sc -> (Tuple) new DefaultTuple(sc.value, sc.score)).toList();
 				} else {
@@ -232,12 +232,12 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 
 			boolean requiresStringConversion = lowerBound instanceof String || upperBound instanceof String;
 
-			boolean isLimited = command.getLimit() != null;
+			boolean isLimited = command.getLimit().isPresent();
 
 			Observable<List<Tuple>> result = Observable.empty();
 
 			if (ObjectUtils.nullSafeEquals(command.getDirection(), Direction.ASC)) {
-				if (ObjectUtils.nullSafeEquals(command.getWithScores(), Boolean.TRUE)) {
+				if (command.getWithScores().isPresent() && ObjectUtils.nullSafeEquals(command.getWithScores().get(), Boolean.TRUE)) {
 
 					if (!isLimited) {
 						result = (requiresStringConversion
@@ -247,9 +247,9 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 					} else {
 						result = (requiresStringConversion
 								? cmd.zrangebyscoreWithScores(command.getKey().array(), lowerBound.toString(), upperBound.toString(),
-										command.getLimit().getOffset(), command.getLimit().getCount())
+										command.getLimit().get().getOffset(), command.getLimit().get().getCount())
 								: cmd.zrangebyscoreWithScores(command.getKey().array(), (Double) lowerBound, (Double) upperBound,
-										command.getLimit().getOffset(), command.getLimit().getCount()))
+										command.getLimit().get().getOffset(), command.getLimit().get().getCount()))
 												.map(sc -> (Tuple) new DefaultTuple(sc.value, sc.score)).toList();
 					}
 				} else {
@@ -263,14 +263,14 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 
 						result = (requiresStringConversion
 								? cmd.zrangebyscore(command.getKey().array(), lowerBound.toString(), upperBound.toString(),
-										command.getLimit().getOffset(), command.getLimit().getCount())
+										command.getLimit().get().getOffset(), command.getLimit().get().getCount())
 								: cmd.zrangebyscore(command.getKey().array(), (Double) lowerBound, (Double) upperBound,
-										command.getLimit().getOffset(), command.getLimit().getCount()))
+										command.getLimit().get().getOffset(), command.getLimit().get().getCount()))
 												.map(value -> (Tuple) new DefaultTuple(value, Double.NaN)).toList();
 					}
 				}
 			} else {
-				if (ObjectUtils.nullSafeEquals(command.getWithScores(), Boolean.TRUE)) {
+				if (command.getWithScores().isPresent() && ObjectUtils.nullSafeEquals(command.getWithScores().get(), Boolean.TRUE)) {
 
 					if (!isLimited) {
 						result = (requiresStringConversion
@@ -281,9 +281,9 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 
 						result = (requiresStringConversion
 								? cmd.zrevrangebyscoreWithScores(command.getKey().array(), lowerBound.toString(), upperBound.toString(),
-										command.getLimit().getOffset(), command.getLimit().getCount())
+										command.getLimit().get().getOffset(), command.getLimit().get().getCount())
 								: cmd.zrevrangebyscoreWithScores(command.getKey().array(), (Double) lowerBound, (Double) upperBound,
-										command.getLimit().getOffset(), command.getLimit().getCount()))
+										command.getLimit().get().getOffset(), command.getLimit().get().getCount()))
 												.map(sc -> (Tuple) new DefaultTuple(sc.value, sc.score)).toList();
 					}
 				} else {
@@ -297,9 +297,9 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 
 						result = (requiresStringConversion
 								? cmd.zrevrangebyscore(command.getKey().array(), lowerBound.toString(), upperBound.toString(),
-										command.getLimit().getOffset(), command.getLimit().getCount())
+										command.getLimit().get().getOffset(), command.getLimit().get().getCount())
 								: cmd.zrevrangebyscore(command.getKey().array(), (Double) lowerBound, (Double) upperBound,
-										command.getLimit().getOffset(), command.getLimit().getCount()))
+										command.getLimit().get().getOffset(), command.getLimit().get().getCount()))
 												.map(value -> (Tuple) new DefaultTuple(value, Double.NaN)).toList();
 					}
 				}
@@ -400,24 +400,21 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 	public Flux<NumericResponse<ZRemRangeByScoreCommand, Long>> zRemRangeByScore(
 			Publisher<ZRemRangeByScoreCommand> commands) {
 
-		return connection.execute(cmd -> {
+		return connection.execute(cmd -> Flux.from(commands).flatMap(command -> {
 
-			return Flux.from(commands).flatMap(command -> {
+			Assert.notNull(command.getKey(), "Key must not be null!");
+			Assert.notNull(command.getRange(), "Range must not be null!");
 
-				Assert.notNull(command.getKey(), "Key must not be null!");
-				Assert.notNull(command.getRange(), "Range must not be null!");
+			Object lowerBound = AgrumentConverters.lowerBoundArgOf(command.getRange());
+			Object upperBound = AgrumentConverters.upperBoundArgOf(command.getRange());
 
-				Object lowerBound = ReactiveZSetCommands.AgrumentConverters.lowerBoundArgOf(command.getRange());
-				Object upperBound = ReactiveZSetCommands.AgrumentConverters.upperBoundArgOf(command.getRange());
+			Observable<Long> result = (lowerBound instanceof String || upperBound instanceof String)
+					? cmd.zremrangebyscore(command.getKey().array(), lowerBound.toString(), upperBound.toString())
+					: cmd.zremrangebyscore(command.getKey().array(), (Double) lowerBound, (Double) upperBound);
 
-				Observable<Long> result = (lowerBound instanceof String || upperBound instanceof String)
-						? cmd.zremrangebyscore(command.getKey().array(), lowerBound.toString(), upperBound.toString())
-						: cmd.zremrangebyscore(command.getKey().array(), (Double) lowerBound, (Double) upperBound);
-
-				return LettuceReactiveRedisConnection.<Long> monoConverter().convert(result)
-						.map(value -> new NumericResponse<>(command, value));
-			});
-		});
+			return LettuceReactiveRedisConnection.<Long> monoConverter().convert(result)
+					.map(value -> new NumericResponse<>(command, value));
+		}));
 	}
 
 	/*
@@ -433,8 +430,8 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 			Assert.notEmpty(command.getSourceKeys(), "Source keys must not be null or empty!");
 
 			ZStoreArgs args = null;
-			if (command.getAggregateFunction() != null || command.getWeights() != null) {
-				args = zStoreArgs(command.getAggregateFunction(), command.getWeights());
+			if (command.getAggregateFunction().isPresent() || !command.getWeights().isEmpty()) {
+				args = zStoreArgs(command.getAggregateFunction().isPresent() ? command.getAggregateFunction().get() : null, command.getWeights());
 			}
 
 			byte[][] sourceKeys = command.getSourceKeys().stream().map(ByteBuffer::array).toArray(size -> new byte[size][]);
@@ -458,8 +455,8 @@ public class LettuceReactiveZSetCommands implements ReactiveZSetCommands {
 			Assert.notEmpty(command.getSourceKeys(), "Source keys must not be null or empty!");
 
 			ZStoreArgs args = null;
-			if (command.getAggregateFunction() != null || command.getWeights() != null) {
-				args = zStoreArgs(command.getAggregateFunction(), command.getWeights());
+			if (command.getAggregateFunction().isPresent() || !command.getWeights().isEmpty()) {
+				args = zStoreArgs(command.getAggregateFunction().isPresent() ? command.getAggregateFunction().get() : null, command.getWeights());
 			}
 
 			byte[][] sourceKeys = command.getSourceKeys().stream().map(ByteBuffer::array).toArray(size -> new byte[size][]);

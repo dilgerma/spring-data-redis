@@ -18,6 +18,7 @@ package org.springframework.data.redis.connection;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.reactivestreams.Publisher;
@@ -157,16 +158,16 @@ public interface ReactiveZSetCommands {
 			return tuples;
 		}
 
-		public Boolean getUpsert() {
-			return upsert;
+		public Optional<Boolean> getUpsert() {
+			return Optional.ofNullable(upsert);
 		}
 
-		public Boolean getIncr() {
-			return incr;
+		public Optional<Boolean> getIncr() {
+			return Optional.ofNullable(incr);
 		}
 
-		public Boolean getReturnTotalChanged() {
-			return returnTotalChanged;
+		public Optional<Boolean> getReturnTotalChanged() {
+			return Optional.ofNullable(returnTotalChanged);
 		}
 	}
 
@@ -451,8 +452,8 @@ public interface ReactiveZSetCommands {
 			return range;
 		}
 
-		public Boolean getWithScores() {
-			return withScores;
+		public Optional<Boolean> getWithScores() {
+			return Optional.ofNullable(withScores);
 		}
 
 		public Direction getDirection() {
@@ -475,9 +476,7 @@ public interface ReactiveZSetCommands {
 			return Mono.error(e);
 		}
 
-		return zRange(Mono.just(ZRangeCommand.valuesWithin(range).from(key))).next().map(resp -> {
-			return resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList());
-		});
+		return zRange(Mono.just(ZRangeCommand.valuesWithin(range).from(key))).next().map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
 	}
 
 	/**
@@ -514,9 +513,7 @@ public interface ReactiveZSetCommands {
 			return Mono.error(e);
 		}
 
-		return zRange(Mono.just(ZRangeCommand.reverseValuesWithin(range).from(key))).next().map(resp -> {
-			return resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList());
-		});
+		return zRange(Mono.just(ZRangeCommand.reverseValuesWithin(range).from(key))).next().map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
 	}
 
 	/**
@@ -590,16 +587,16 @@ public interface ReactiveZSetCommands {
 			return range;
 		}
 
-		public Boolean getWithScores() {
-			return withScores;
+		public Optional<Boolean> getWithScores() {
+			return Optional.ofNullable(withScores);
 		}
 
 		public Direction getDirection() {
 			return direction;
 		}
 
-		public Limit getLimit() {
-			return limit;
+		public Optional<Limit> getLimit() {
+			return Optional.ofNullable(limit);
 		}
 	}
 
@@ -698,9 +695,7 @@ public interface ReactiveZSetCommands {
 			return Mono.error(e);
 		}
 
-		return zRangeByScore(Mono.just(ZRangeByScoreCommand.reverseScoresWithin(range).from(key))).next().map(resp -> {
-			return resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList());
-		});
+		return zRangeByScore(Mono.just(ZRangeByScoreCommand.reverseScoresWithin(range).from(key))).next().map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
 	}
 
 	/**
@@ -1058,11 +1053,11 @@ public interface ReactiveZSetCommands {
 		}
 
 		public List<Double> getWeights() {
-			return weights;
+			return weights == null ? Collections.emptyList() : weights;
 		}
 
-		public Aggregate getAggregateFunction() {
-			return aggregateFunction;
+		public Optional<Aggregate> getAggregateFunction() {
+			return Optional.ofNullable(aggregateFunction);
 		}
 
 		public Integer getNumKeys() {
@@ -1166,11 +1161,11 @@ public interface ReactiveZSetCommands {
 		}
 
 		public List<Double> getWeights() {
-			return weights;
+			return weights == null ? Collections.emptyList() : weights;
 		}
 
-		public Aggregate getAggregateFunction() {
-			return aggregateFunction;
+		public Optional<Aggregate> getAggregateFunction() {
+			return Optional.ofNullable(aggregateFunction);
 		}
 
 		public Integer getNumKeys() {

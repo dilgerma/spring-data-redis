@@ -18,6 +18,7 @@ package org.springframework.data.redis.connection;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.reactivestreams.Publisher;
 import org.springframework.data.domain.Range;
@@ -79,20 +80,12 @@ public interface ReactiveStringCommands {
 			return value;
 		}
 
-		public Expiration getExpiration() {
-			return expiration;
+		public Optional<Expiration> getExpiration() {
+			return Optional.ofNullable(expiration);
 		}
 
-		public SetOption getOption() {
-			return option;
-		}
-
-		public boolean hasExpiration() {
-			return expiration != null;
-		}
-
-		public boolean hasOption() {
-			return option != null;
+		public Optional<SetOption> getOption() {
+			return Optional.ofNullable(option);
 		}
 	}
 

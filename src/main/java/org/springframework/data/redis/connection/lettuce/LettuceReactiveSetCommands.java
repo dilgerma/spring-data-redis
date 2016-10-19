@@ -299,9 +299,11 @@ public class LettuceReactiveSetCommands implements ReactiveSetCommands {
 
 			Assert.notNull(command.getKey(), "Key must not be null!");
 
-			Observable<List<ByteBuffer>> result = ObjectUtils.nullSafeEquals(command.getCount(), 1L)
+			boolean singleElement = !command.getCount().isPresent() || command.getCount().get().equals(1L);
+
+			Observable<List<ByteBuffer>> result = singleElement
 					? cmd.srandmember(command.getKey().array()).map(ByteBuffer::wrap).map(Collections::singletonList)
-					: cmd.srandmember(command.getKey().array(), command.getCount()).map(ByteBuffer::wrap).toList();
+					: cmd.srandmember(command.getKey().array(), command.getCount().get()).map(ByteBuffer::wrap).toList();
 
 			return LettuceReactiveRedisConnection.<List<ByteBuffer>> monoConverter().convert(result)
 					.map(value -> new MultiValueResponse<>(command, value));

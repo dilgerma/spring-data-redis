@@ -89,8 +89,9 @@ public class LettuceReactiveStringCommands implements ReactiveStringCommands {
 
 			SetArgs args = null;
 
-			if (command.hasExpiration() || command.hasOption()) {
-				LettuceConverters.toSetArgs(command.getExpiration(), command.getOption());
+			if (command.getExpiration().isPresent() || command.getOption().isPresent()) {
+				args = LettuceConverters.toSetArgs(command.getExpiration().isPresent() ? command.getExpiration().get() : null,
+						command.getOption().isPresent() ? command.getOption().get() : null);
 			}
 
 			return LettuceReactiveRedisConnection.<Boolean> monoConverter().convert(
@@ -113,7 +114,7 @@ public class LettuceReactiveStringCommands implements ReactiveStringCommands {
 			Assert.notNull(command.getKey(), "Key must not be null!");
 			Assert.notNull(command.getValue(), "Value must not be null!");
 
-			if (command.hasExpiration() || command.hasOption()) {
+			if (command.getExpiration().isPresent() || command.getOption().isPresent()) {
 				throw new IllegalArgumentException("Command must not define exipiration nor option for GETSET.");
 			}
 
@@ -170,9 +171,10 @@ public class LettuceReactiveStringCommands implements ReactiveStringCommands {
 
 			Assert.notNull(command.getKey(), "Key must not be null!");
 			Assert.notNull(command.getValue(), "Value must not be null!");
+			Assert.isTrue(command.getExpiration().isPresent(), "Expiration time must not be null!");
 
 			return LettuceReactiveRedisConnection.<String> monoConverter()
-					.convert(cmd.setex(command.getKey().array(), command.getExpiration().getExpirationTimeInSeconds(),
+					.convert(cmd.setex(command.getKey().array(), command.getExpiration().get().getExpirationTimeInSeconds(),
 							command.getValue().array()))
 					.map(LettuceConverters::stringToBoolean).map((value) -> new BooleanResponse<>(command, value));
 		}));
@@ -189,9 +191,10 @@ public class LettuceReactiveStringCommands implements ReactiveStringCommands {
 
 			Assert.notNull(command.getKey(), "Key must not be null!");
 			Assert.notNull(command.getValue(), "Value must not be null!");
+			Assert.isTrue(command.getExpiration().isPresent(), "Expiration time must not be null!");
 
 			return LettuceReactiveRedisConnection.<String> monoConverter()
-					.convert(cmd.psetex(command.getKey().array(), command.getExpiration().getExpirationTimeInMilliseconds(),
+					.convert(cmd.psetex(command.getKey().array(), command.getExpiration().get().getExpirationTimeInMilliseconds(),
 							command.getValue().array()))
 					.map(LettuceConverters::stringToBoolean).map((value) -> new BooleanResponse<>(command, value));
 		}));

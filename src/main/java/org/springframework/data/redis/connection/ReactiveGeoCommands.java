@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -202,8 +203,8 @@ public interface ReactiveGeoCommands {
 			return to;
 		}
 
-		public Metric getMetric() {
-			return metric;
+		public Optional<Metric> getMetric() {
+			return Optional.ofNullable(metric);
 		}
 	}
 
@@ -519,8 +520,8 @@ public interface ReactiveGeoCommands {
 			return new GeoRadiusCommand(getKey(), point, distance, args, store, key);
 		}
 
-		public Direction getDirection() {
-			return args.getSortDirection();
+		public Optional<Direction> getDirection() {
+			return Optional.ofNullable(args.getSortDirection());
 		}
 
 		public Distance getDistance() {
@@ -531,24 +532,24 @@ public interface ReactiveGeoCommands {
 			return args.getFlags();
 		}
 
-		public Long getLimit() {
-			return args.getLimit();
+		public Optional<Long> getLimit() {
+			return Optional.ofNullable(args.getLimit());
 		}
 
 		public Point getPoint() {
 			return point;
 		}
 
-		public ByteBuffer getStore() {
-			return store;
+		public Optional<ByteBuffer> getStore() {
+			return Optional.ofNullable(store);
 		}
 
-		public ByteBuffer getStoreDist() {
-			return storeDist;
+		public Optional<ByteBuffer> getStoreDist() {
+			return Optional.ofNullable(storeDist);
 		}
 
-		public GeoRadiusCommandArgs getArgs() {
-			return args;
+		public Optional<GeoRadiusCommandArgs> getArgs() {
+			return Optional.ofNullable(args);
 		}
 
 		private GeoRadiusCommandArgs cloneArgs() {
@@ -720,8 +721,8 @@ public interface ReactiveGeoCommands {
 			return new GeoRadiusByMemberCommand(getKey(), member, distance, args, store, key);
 		}
 
-		public Direction getDirection() {
-			return args.getSortDirection();
+		public Optional<Direction> getDirection() {
+			return Optional.ofNullable(args.getSortDirection());
 		}
 
 		public Distance getDistance() {
@@ -732,24 +733,24 @@ public interface ReactiveGeoCommands {
 			return args.getFlags();
 		}
 
-		public Long getLimit() {
-			return args.getLimit();
+		public Optional<Long> getLimit() {
+			return Optional.ofNullable(args.getLimit());
 		}
 
 		public ByteBuffer getMember() {
 			return member;
 		}
 
-		public ByteBuffer getStore() {
-			return store;
+		public Optional<ByteBuffer> getStore() {
+			return Optional.ofNullable(store);
 		}
 
-		public ByteBuffer getStoreDist() {
-			return storeDist;
+		public Optional<ByteBuffer> getStoreDist() {
+			return Optional.ofNullable(storeDist);
 		}
 
-		public GeoRadiusCommandArgs getArgs() {
-			return args;
+		public Optional<GeoRadiusCommandArgs> getArgs() {
+			return Optional.ofNullable(args);
 		}
 
 		private GeoRadiusCommandArgs cloneArgs() {

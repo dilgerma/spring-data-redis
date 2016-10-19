@@ -382,7 +382,7 @@ abstract public class Converters {
 	 * @author Christoph Strobl
 	 * @since 1.8
 	 */
-	static enum DistanceConverterFactory {
+	enum DistanceConverterFactory {
 
 		INSTANCE;
 

@@ -18,6 +18,7 @@ package org.springframework.data.redis.connection;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.reactivestreams.Publisher;
 import org.springframework.data.redis.connection.ReactiveRedisConnection.BooleanResponse;
@@ -710,12 +711,16 @@ public interface ReactiveSetCommands {
 			return new SRandMembersCommand(null, nrValuesToRetrieve);
 		}
 
+		public static SRandMembersCommand singleValue() {
+			return new SRandMembersCommand(null, null);
+		}
+
 		public SRandMembersCommand from(ByteBuffer key) {
 			return new SRandMembersCommand(key, count);
 		}
 
-		public Long getCount() {
-			return count;
+		public Optional<Long> getCount() {
+			return Optional.ofNullable(count);
 		}
 	}
 

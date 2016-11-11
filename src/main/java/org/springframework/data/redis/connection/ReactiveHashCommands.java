@@ -99,13 +99,9 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<Boolean> hSet(ByteBuffer key, ByteBuffer field, ByteBuffer value) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(field, "field must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(field, "field must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return hSet(Mono.just(HSetCommand.value(value).ofField(field).forKey(key))).next().map(BooleanResponse::getOutput);
 	}
@@ -120,13 +116,9 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<Boolean> hSetNX(ByteBuffer key, ByteBuffer field, ByteBuffer value) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(field, "field must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(field, "field must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return hSet(Mono.just(HSetCommand.value(value).ofField(field).forKey(key).ifValueNotExists())).next()
 				.map(BooleanResponse::getOutput);
@@ -141,12 +133,8 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<Boolean> hMSet(ByteBuffer key, Map<ByteBuffer, ByteBuffer> fieldValueMap) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(fieldValueMap, "field must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(fieldValueMap, "field must not be null");
 
 		return hSet(Mono.just(HSetCommand.fieldValues(fieldValueMap).forKey(key).ifValueNotExists())).next()
 				.map(BooleanResponse::getOutput);
@@ -210,12 +198,8 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<List<ByteBuffer>> hMGet(ByteBuffer key, List<ByteBuffer> fields) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(fields, "fields must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(fields, "fields must not be null");
 
 		return hMGet(Mono.just(HGetCommand.fields(fields).from(key))).next().map(MultiValueResponse::getOutput);
 	}
@@ -263,12 +247,8 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<Boolean> hExists(ByteBuffer key, ByteBuffer field) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(field, "field must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(field, "field must not be null");
 
 		return hExists(Mono.just(HExistsCommand.field(field).in(key))).next().map(BooleanResponse::getOutput);
 	}
@@ -319,11 +299,8 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<Boolean> hDel(ByteBuffer key, ByteBuffer field) {
 
-		try {
-			Assert.notNull(field, "field must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(field, "field must not be null");
+
 		return hDel(key, Collections.singletonList(field)).map(val -> val > 0 ? Boolean.TRUE : Boolean.FALSE);
 	}
 
@@ -336,12 +313,8 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<Long> hDel(ByteBuffer key, List<ByteBuffer> fields) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(fields, "fields must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(fields, "fields must not be null");
 
 		return hDel(Mono.just(HDelCommand.fields(fields).from(key))).next().map(NumericResponse::getOutput);
 	}
@@ -362,11 +335,7 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<Long> hLen(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return hLen(Mono.just(new KeyCommand(key))).next().map(NumericResponse::getOutput);
 	}
@@ -387,11 +356,7 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<List<ByteBuffer>> hKeys(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return hKeys(Mono.just(new KeyCommand(key))).next().map(MultiValueResponse::getOutput);
 	}
@@ -412,11 +377,7 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<List<ByteBuffer>> hVals(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return hVals(Mono.just(new KeyCommand(key))).next().map(MultiValueResponse::getOutput);
 	}
@@ -437,11 +398,7 @@ public interface ReactiveHashCommands {
 	 */
 	default Mono<Map<ByteBuffer, ByteBuffer>> hGetAll(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return hGetAll(Mono.just(new KeyCommand(key))).next().map(CommandResponse::getOutput);
 	}

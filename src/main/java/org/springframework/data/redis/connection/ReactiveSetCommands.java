@@ -77,11 +77,7 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Long> sAdd(ByteBuffer key, ByteBuffer value) {
 
-		try {
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(value, "value must not be null");
 
 		return sAdd(key, Collections.singletonList(value));
 	}
@@ -95,12 +91,8 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Long> sAdd(ByteBuffer key, List<ByteBuffer> values) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(values, "values must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(values, "values must not be null");
 
 		return sAdd(Mono.just(SAddCommand.values(values).to(key))).next().map(NumericResponse::getOutput);
 	}
@@ -152,11 +144,7 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Long> sRem(ByteBuffer key, ByteBuffer value) {
 
-		try {
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(value, "value must not be null");
 
 		return sRem(key, Collections.singletonList(value));
 	}
@@ -170,12 +158,8 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Long> sRem(ByteBuffer key, List<ByteBuffer> values) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(values, "values must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(values, "values must not be null");
 
 		return sRem(Mono.just(SRemCommand.values(values).from(key))).next().map(NumericResponse::getOutput);
 	}
@@ -196,11 +180,7 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<ByteBuffer> sPop(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return sPop(Mono.just(new KeyCommand(key))).next().map(ByteBufferResponse::getOutput);
 	}
@@ -259,13 +239,9 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Boolean> sMove(ByteBuffer sourceKey, ByteBuffer destinationKey, ByteBuffer value) {
 
-		try {
-			Assert.notNull(sourceKey, "sourceKey must not be null");
-			Assert.notNull(destinationKey, "destinationKey must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(sourceKey, "sourceKey must not be null");
+		Assert.notNull(destinationKey, "destinationKey must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return sMove(Mono.just(SMoveCommand.value(value).from(sourceKey).to(destinationKey))).next()
 				.map(BooleanResponse::getOutput);
@@ -287,11 +263,7 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Long> sCard(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return sCard(Mono.just(new KeyCommand(key))).next().map(NumericResponse::getOutput);
 	}
@@ -339,12 +311,8 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Boolean> sIsMember(ByteBuffer key, ByteBuffer value) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return sIsMember(Mono.just(SIsMemberCommand.value(value).of(key))).next().map(BooleanResponse::getOutput);
 	}
@@ -390,11 +358,7 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> sInter(List<ByteBuffer> keys) {
 
-		try {
-			Assert.notNull(keys, "keys must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(keys, "keys must not be null");
 
 		return sInter(Mono.just(SInterCommand.keys(keys))).next().map(MultiValueResponse::getOutput);
 	}
@@ -442,12 +406,8 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Long> sInterStore(ByteBuffer destinationKey, List<ByteBuffer> keys) {
 
-		try {
-			Assert.notNull(destinationKey, "destinationKey must not be null");
-			Assert.notNull(keys, "keys must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(destinationKey, "destinationKey must not be null");
+		Assert.notNull(keys, "keys must not be null");
 
 		return sInterStore(Mono.just(SInterStoreCommand.keys(keys).storeAt(destinationKey))).next()
 				.map(NumericResponse::getOutput);
@@ -494,11 +454,7 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> sUnion(List<ByteBuffer> keys) {
 
-		try {
-			Assert.notNull(keys, "keys must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(keys, "keys must not be null");
 
 		return sUnion(Mono.just(SUnionCommand.keys(keys))).next().map(MultiValueResponse::getOutput);
 	}
@@ -546,12 +502,8 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Long> sUnionStore(ByteBuffer destinationKey, List<ByteBuffer> keys) {
 
-		try {
-			Assert.notNull(destinationKey, "destinationKey must not be null");
-			Assert.notNull(keys, "keys must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(destinationKey, "destinationKey must not be null");
+		Assert.notNull(keys, "keys must not be null");
 
 		return sUnionStore(Mono.just(SUnionStoreCommand.keys(keys).storeAt(destinationKey))).next()
 				.map(NumericResponse::getOutput);
@@ -598,11 +550,7 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> sDiff(List<ByteBuffer> keys) {
 
-		try {
-			Assert.notNull(keys, "keys must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(keys, "keys must not be null");
 
 		return sDiff(Mono.just(SDiffCommand.keys(keys))).next().map(MultiValueResponse::getOutput);
 	}
@@ -650,12 +598,8 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<Long> sDiffStore(ByteBuffer destinationKey, List<ByteBuffer> keys) {
 
-		try {
-			Assert.notNull(destinationKey, "destinationKey must not be null");
-			Assert.notNull(keys, "keys must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(destinationKey, "destinationKey must not be null");
+		Assert.notNull(keys, "keys must not be null");
 
 		return sDiffStore(Mono.just(SDiffStoreCommand.keys(keys).storeAt(destinationKey))).next()
 				.map(NumericResponse::getOutput);
@@ -677,11 +621,7 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> sMembers(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return sMembers(Mono.just(new KeyCommand(key))).next().map(MultiValueResponse::getOutput);
 	}
@@ -743,12 +683,8 @@ public interface ReactiveSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> sRandMember(ByteBuffer key, Long count) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(count, "count must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(count, "count must not be null");
 
 		return sRandMember(Mono.just(SRandMembersCommand.valueCount(count).from(key))).next()
 				.map(MultiValueResponse::getOutput);

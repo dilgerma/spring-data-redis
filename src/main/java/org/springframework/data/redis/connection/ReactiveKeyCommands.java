@@ -43,11 +43,7 @@ public interface ReactiveKeyCommands {
 	 */
 	default Mono<Boolean> exists(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "Key must not be null!");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "Key must not be null!");
 
 		return exists(Mono.just(new KeyCommand(key))).next().map(BooleanResponse::getOutput);
 	}
@@ -68,11 +64,7 @@ public interface ReactiveKeyCommands {
 	 */
 	default Mono<DataType> type(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return type(Mono.just(new KeyCommand(key))).next().map(CommandResponse::getOutput);
 	}
@@ -93,11 +85,7 @@ public interface ReactiveKeyCommands {
 	 */
 	default Mono<List<ByteBuffer>> keys(ByteBuffer pattern) {
 
-		try {
-			Assert.notNull(pattern, "pattern must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(pattern, "pattern must not be null");
 
 		return keys(Mono.just(pattern)).next().map(MultiValueResponse::getOutput);
 	}
@@ -152,11 +140,7 @@ public interface ReactiveKeyCommands {
 	 */
 	default Mono<Boolean> rename(ByteBuffer key, ByteBuffer newName) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return rename(Mono.just(RenameCommand.key(key).to(newName))).next().map(BooleanResponse::getOutput);
 	}
@@ -172,11 +156,7 @@ public interface ReactiveKeyCommands {
 	 */
 	default Mono<Boolean> renameNX(ByteBuffer key, ByteBuffer newName) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return renameNX(Mono.just(RenameCommand.key(key).to(newName))).next().map(BooleanResponse::getOutput);
 	}
@@ -199,11 +179,7 @@ public interface ReactiveKeyCommands {
 	 */
 	default Mono<Long> del(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "Key must not be null!");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "Key must not be null!");
 
 		return del(Mono.just(new KeyCommand(key))).next().map(NumericResponse::getOutput);
 	}
@@ -224,11 +200,7 @@ public interface ReactiveKeyCommands {
 	 */
 	default Mono<Long> mDel(List<ByteBuffer> keys) {
 
-		try {
-			Assert.notEmpty(keys, "Keys must not be empty or null!");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notEmpty(keys, "Keys must not be empty or null!");
 
 		return mDel(Mono.just(keys)).next().map(NumericResponse::getOutput);
 	}

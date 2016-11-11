@@ -39,11 +39,9 @@ public interface ReactiveNumberCommands {
 	 */
 	default Mono<Long> incr(ByteBuffer key) {
 
-		try {
+
 			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+
 		return incr(Mono.just(new KeyCommand(key))).next().map(NumericResponse::getOutput);
 	}
 
@@ -90,12 +88,10 @@ public interface ReactiveNumberCommands {
 	 */
 	default <T extends Number> Mono<T> incrBy(ByteBuffer key, T value) {
 
-		try {
+
 			Assert.notNull(key, "key must not be null");
 			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+
 
 		return incrBy(Mono.just(IncrByCommand.<T> incr(key).by(value))).next().map(NumericResponse::getOutput);
 	}
@@ -144,11 +140,9 @@ public interface ReactiveNumberCommands {
 	 */
 	default Mono<Long> decr(ByteBuffer key) {
 
-		try {
+
 			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+
 
 		return decr(Mono.just(new KeyCommand(key))).next().map(NumericResponse::getOutput);
 	}
@@ -170,12 +164,10 @@ public interface ReactiveNumberCommands {
 	 */
 	default <T extends Number> Mono<T> decrBy(ByteBuffer key, T value) {
 
-		try {
+
 			Assert.notNull(key, "key must not be null");
 			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+
 
 		return decrBy(Mono.just(DecrByCommand.<T> decr(key).by(value))).next().map(NumericResponse::getOutput);
 	}
@@ -236,13 +228,11 @@ public interface ReactiveNumberCommands {
 	 */
 	default <T extends Number> Mono<T> hIncrBy(ByteBuffer key, ByteBuffer field, T value) {
 
-		try {
+
 			Assert.notNull(key, "key must not be null");
 			Assert.notNull(field, "field must not be null");
 			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+
 
 		return hIncrBy(Mono.just(HIncrByCommand.<T> incr(field).by(value).forKey(key))).next()
 				.map(NumericResponse::getOutput);

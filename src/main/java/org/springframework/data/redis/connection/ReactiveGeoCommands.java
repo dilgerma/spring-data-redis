@@ -90,13 +90,9 @@ public interface ReactiveGeoCommands {
 	 */
 	default Mono<Long> geoAdd(ByteBuffer key, Point point, ByteBuffer member) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(point, "point must not be null");
-			Assert.notNull(member, "member must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(point, "point must not be null");
+		Assert.notNull(member, "member must not be null");
 
 		return geoAdd(key, new GeoLocation<>(member, point));
 	}
@@ -110,12 +106,8 @@ public interface ReactiveGeoCommands {
 	 */
 	default Mono<Long> geoAdd(ByteBuffer key, GeoLocation<ByteBuffer> location) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(location, "location must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(location, "location must not be null");
 
 		return geoAdd(key, Collections.singletonList(location));
 	}
@@ -129,12 +121,8 @@ public interface ReactiveGeoCommands {
 	 */
 	default Mono<Long> geoAdd(ByteBuffer key, List<GeoLocation<ByteBuffer>> locations) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(locations, "locations must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(locations, "locations must not be null");
 
 		return geoAdd(Mono.just(GeoAddCommand.locations(locations).to(key))).next().map(NumericResponse::getOutput);
 	}
@@ -231,13 +219,9 @@ public interface ReactiveGeoCommands {
 	 */
 	default Mono<Distance> geoDist(ByteBuffer key, ByteBuffer from, ByteBuffer to, Metric metric) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(from, "from must not be null");
-			Assert.notNull(to, "to must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(from, "from must not be null");
+		Assert.notNull(to, "to must not be null");
 
 		return geoDist(Mono.just(GeoDistCommand.units(metric).between(from).and(to).forKey(key))).next()
 				.map(CommandResponse::getOutput);
@@ -290,11 +274,7 @@ public interface ReactiveGeoCommands {
 	 */
 	default Mono<String> geoHash(ByteBuffer key, ByteBuffer member) {
 
-		try {
-			Assert.notNull(member, "member must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(member, "member must not be null");
 
 		return geoHash(key, Collections.singletonList(member)).map(vals -> vals.isEmpty() ? null : vals.iterator().next());
 	}
@@ -308,12 +288,8 @@ public interface ReactiveGeoCommands {
 	 */
 	default Mono<List<String>> geoHash(ByteBuffer key, List<ByteBuffer> members) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(members, "members must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(members, "members must not be null");
 
 		return geoHash(Mono.just(GeoHashCommand.members(members).of(key))).next().map(MultiValueResponse::getOutput);
 	}
@@ -365,11 +341,7 @@ public interface ReactiveGeoCommands {
 	 */
 	default Mono<Point> geoPos(ByteBuffer key, ByteBuffer member) {
 
-		try {
-			Assert.notNull(member, "member must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(member, "member must not be null");
 
 		return geoPos(key, Collections.singletonList(member)).map(vals -> vals.isEmpty() ? null : vals.iterator().next());
 	}
@@ -383,12 +355,8 @@ public interface ReactiveGeoCommands {
 	 */
 	default Mono<List<Point>> geoPos(ByteBuffer key, List<ByteBuffer> members) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(members, "members must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(members, "members must not be null");
 
 		return geoPos(Mono.just(GeoPosCommand.members(members).of(key))).next().map(MultiValueResponse::getOutput);
 	}
@@ -585,12 +553,8 @@ public interface ReactiveGeoCommands {
 	default Mono<GeoResults<GeoLocation<ByteBuffer>>> geoRadius(ByteBuffer key, Circle circle,
 			GeoRadiusCommandArgs geoRadiusArgs) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(circle, "circle must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(circle, "circle must not be null");
 
 		return geoRadius(Mono.just(GeoRadiusCommand.within(circle).withArgs(geoRadiusArgs).forKey(key))).next()
 				.map(CommandResponse::getOutput);
@@ -787,13 +751,9 @@ public interface ReactiveGeoCommands {
 	default Mono<GeoResults<GeoLocation<ByteBuffer>>> geoRadiusByMember(ByteBuffer key, ByteBuffer member,
 			Distance distance, GeoRadiusCommandArgs geoRadiusArgs) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(member, "member must not be null");
-			Assert.notNull(distance, "distance must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(member, "member must not be null");
+		Assert.notNull(distance, "distance must not be null");
 
 		return geoRadiusByMember(
 				Mono.just(GeoRadiusByMemberCommand.within(distance).from(member).forKey(key).withArgs(geoRadiusArgs))).next()

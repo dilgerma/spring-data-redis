@@ -75,11 +75,7 @@ public interface ReactiveHyperLogLogCommands {
 	 */
 	default Mono<Long> pfAdd(ByteBuffer key, ByteBuffer value) {
 
-		try {
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(value, "value must not be null");
 
 		return pfAdd(key, Collections.singletonList(value));
 	}
@@ -93,12 +89,8 @@ public interface ReactiveHyperLogLogCommands {
 	 */
 	default Mono<Long> pfAdd(ByteBuffer key, List<ByteBuffer> values) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(values, "values must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(values, "values must not be null");
 
 		return pfAdd(Mono.just(PfAddCommand.values(values).to(key))).next().map(NumericResponse::getOutput);
 	}
@@ -151,11 +143,7 @@ public interface ReactiveHyperLogLogCommands {
 	 */
 	default Mono<Long> pfCount(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return pfCount(Collections.singletonList(key));
 	}
@@ -168,11 +156,7 @@ public interface ReactiveHyperLogLogCommands {
 	 */
 	default Mono<Long> pfCount(List<ByteBuffer> keys) {
 
-		try {
-			Assert.notNull(keys, "keys must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(keys, "keys must not be null");
 
 		return pfCount(Mono.just(PfCountCommand.valuesIn(keys))).next().map(NumericResponse::getOutput);
 	}
@@ -220,12 +204,8 @@ public interface ReactiveHyperLogLogCommands {
 	 */
 	default Mono<Boolean> pfMerge(ByteBuffer destinationKey, List<ByteBuffer> sourceKeys) {
 
-		try {
-			Assert.notNull(destinationKey, "destinationKey must not be null");
-			Assert.notNull(sourceKeys, "sourceKeys must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(destinationKey, "destinationKey must not be null");
+		Assert.notNull(sourceKeys, "sourceKeys must not be null");
 
 		return pfMerge(Mono.just(PfMergeCommand.valuesIn(sourceKeys).into(destinationKey))).next()
 				.map(BooleanResponse::getOutput);

@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.lambdaworks.redis.Range.Boundary;
 import org.reactivestreams.Publisher;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Range;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.redis.connection.ReactiveRedisConnection.KeyCommand;
@@ -32,10 +30,7 @@ import org.springframework.data.redis.connection.ReactiveRedisConnection.Numeric
 import org.springframework.data.redis.connection.RedisZSetCommands.Aggregate;
 import org.springframework.data.redis.connection.RedisZSetCommands.Limit;
 import org.springframework.data.redis.connection.RedisZSetCommands.Tuple;
-import org.springframework.data.util.DirectFieldAccessFallbackBeanWrapper;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -121,13 +116,9 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Long> zAdd(ByteBuffer key, Double score, ByteBuffer value) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(score, "score must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(score, "score must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return zAdd(Mono.just(ZAddCommand.tuple(new DefaultTuple(value.array(), score)).to(key))).next()
 				.map(resp -> resp.getOutput().longValue());
@@ -188,11 +179,7 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Long> zRem(ByteBuffer key, List<ByteBuffer> values) {
 
-		try {
-			Assert.notNull(values, "values must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(values, "values must not be null");
 
 		return zRem(Mono.just(ZRemCommand.values(values).from(key))).next().map(NumericResponse::getOutput);
 	}
@@ -251,13 +238,9 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Double> zIncrBy(ByteBuffer key, Number increment, ByteBuffer value) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(increment, "increment must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(increment, "increment must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return zIncrBy(Mono.just(ZIncrByCommand.scoreOf(value).by(increment).storedWithin(key))).next()
 				.map(NumericResponse::getOutput);
@@ -317,12 +300,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Long> zRank(ByteBuffer key, ByteBuffer value) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return zRank(Mono.just(ZRankCommand.indexOf(value).storedWithin(key))).next().map(NumericResponse::getOutput);
 	}
@@ -336,12 +315,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Long> zRevRank(ByteBuffer key, ByteBuffer value) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return zRank(Mono.just(ZRankCommand.reverseIndexOf(value).storedWithin(key))).next()
 				.map(NumericResponse::getOutput);
@@ -410,13 +385,10 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> zRange(ByteBuffer key, Range<Long> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
-		return zRange(Mono.just(ZRangeCommand.valuesWithin(range).from(key))).next().map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
+		return zRange(Mono.just(ZRangeCommand.valuesWithin(range).from(key))).next().map(
+				resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
 	}
 
 	/**
@@ -428,11 +400,7 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<Tuple>> zRangeWithScores(ByteBuffer key, Range<Long> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return zRange(Mono.just(ZRangeCommand.valuesWithin(range).withScores().from(key))).next()
 				.map(MultiValueResponse::getOutput);
@@ -447,13 +415,10 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> zRevRange(ByteBuffer key, Range<Long> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
-		return zRange(Mono.just(ZRangeCommand.reverseValuesWithin(range).from(key))).next().map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
+		return zRange(Mono.just(ZRangeCommand.reverseValuesWithin(range).from(key))).next().map(
+				resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
 	}
 
 	/**
@@ -465,11 +430,7 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<Tuple>> zRevRangeWithScores(ByteBuffer key, Range<Long> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return zRange(Mono.just(ZRangeCommand.reverseValuesWithin(range).withScores().from(key))).next()
 				.map(MultiValueResponse::getOutput);
@@ -549,13 +510,10 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> zRangeByScore(ByteBuffer key, Range<Double> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
-		return zRangeByScore(Mono.just(ZRangeByScoreCommand.scoresWithin(range).from(key))).next().map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
+		return zRangeByScore(Mono.just(ZRangeByScoreCommand.scoresWithin(range).from(key))).next().map(
+				resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
 	}
 
 	/**
@@ -568,15 +526,11 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> zRangeByScore(ByteBuffer key, Range<Double> range, Limit limit) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
-		return zRangeByScore(Mono.just(ZRangeByScoreCommand.scoresWithin(range).from(key).limitTo(limit))).next()
-				.map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
+		return zRangeByScore(Mono.just(ZRangeByScoreCommand.scoresWithin(range).from(key).limitTo(limit))).next().map(
+				resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
 	}
 
 	/**
@@ -588,12 +542,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<Tuple>> zRangeByScoreWithScores(ByteBuffer key, Range<Double> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRangeByScore(Mono.just(ZRangeByScoreCommand.scoresWithin(range).withScores().from(key))).next()
 				.map(MultiValueResponse::getOutput);
@@ -609,12 +559,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<Tuple>> zRangeByScoreWithScores(ByteBuffer key, Range<Double> range, Limit limit) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRangeByScore(Mono.just(ZRangeByScoreCommand.scoresWithin(range).withScores().from(key).limitTo(limit)))
 				.next().map(MultiValueResponse::getOutput);
@@ -629,13 +575,10 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> zRevRangeByScore(ByteBuffer key, Range<Double> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
-		return zRangeByScore(Mono.just(ZRangeByScoreCommand.reverseScoresWithin(range).from(key))).next().map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
+		return zRangeByScore(Mono.just(ZRangeByScoreCommand.reverseScoresWithin(range).from(key))).next().map(
+				resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
 	}
 
 	/**
@@ -648,15 +591,12 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> zRevRangeByScore(ByteBuffer key, Range<Double> range, Limit limit) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRangeByScore(Mono.just(ZRangeByScoreCommand.reverseScoresWithin(range).from(key).limitTo(limit))).next()
-				.map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue())).collect(Collectors.toList()));
+				.map(resp -> resp.getOutput().stream().map(tuple -> ByteBuffer.wrap(tuple.getValue()))
+						.collect(Collectors.toList()));
 	}
 
 	/**
@@ -668,12 +608,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<Tuple>> zRevRangeByScoreWithScores(ByteBuffer key, Range<Double> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRangeByScore(Mono.just(ZRangeByScoreCommand.reverseScoresWithin(range).withScores().from(key))).next()
 				.map(MultiValueResponse::getOutput);
@@ -689,12 +625,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<Tuple>> zRevRangeByScoreWithScores(ByteBuffer key, Range<Double> range, Limit limit) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRangeByScore(
 				Mono.just(ZRangeByScoreCommand.reverseScoresWithin(range).withScores().from(key).limitTo(limit))).next()
@@ -747,12 +679,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Long> zCount(ByteBuffer key, Range<Double> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zCount(Mono.just(ZCountCommand.scoresWithin(range).forKey(key))).next().map(NumericResponse::getOutput);
 	}
@@ -775,11 +703,7 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Long> zCard(ByteBuffer key) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
 
 		return zCard(Mono.just(new KeyCommand(key))).next().map(NumericResponse::getOutput);
 	}
@@ -828,12 +752,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Double> zScore(ByteBuffer key, ByteBuffer value) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(value, "value must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(value, "value must not be null");
 
 		return zScore(Mono.just(ZScoreCommand.scoreOf(value).forKey(key))).next().map(NumericResponse::getOutput);
 	}
@@ -881,12 +801,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Long> zRemRangeByRank(ByteBuffer key, Range<Long> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRemRangeByRank(Mono.just(ZRemRangeByRankCommand.valuesWithin(range).from(key))).next()
 				.map(NumericResponse::getOutput);
@@ -903,7 +819,7 @@ public interface ReactiveZSetCommands {
 	/**
 	 * @author Christoph Strobl
 	 */
-	 class ZRemRangeByScoreCommand extends KeyCommand {
+	class ZRemRangeByScoreCommand extends KeyCommand {
 
 		private final Range<Double> range;
 
@@ -936,12 +852,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<Long> zRemRangeByScore(ByteBuffer key, Range<Double> range) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRemRangeByScore(Mono.just(ZRemRangeByScoreCommand.scoresWithin(range).from(key))).next()
 				.map(NumericResponse::getOutput);
@@ -1042,12 +954,8 @@ public interface ReactiveZSetCommands {
 	default Mono<Long> zUnionStore(ByteBuffer destinationKey, List<ByteBuffer> sets, List<Double> weights,
 			Aggregate aggregateFunction) {
 
-		try {
-			Assert.notNull(destinationKey, "destinationKey must not be null");
-			Assert.notNull(sets, "sets must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(destinationKey, "destinationKey must not be null");
+		Assert.notNull(sets, "sets must not be null");
 
 		return zUnionStore(Mono.just(
 				ZUnionStoreCommand.sets(sets).aggregateUsing(aggregateFunction).applyWeights(weights).storeAs(destinationKey)))
@@ -1150,12 +1058,8 @@ public interface ReactiveZSetCommands {
 	default Mono<Long> zInterStore(ByteBuffer destinationKey, List<ByteBuffer> sets, List<Double> weights,
 			Aggregate aggregateFunction) {
 
-		try {
-			Assert.notNull(destinationKey, "destinationKey must not be null");
-			Assert.notNull(sets, "sets must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(destinationKey, "destinationKey must not be null");
+		Assert.notNull(sets, "sets must not be null");
 
 		return zInterStore(Mono.just(
 				ZInterStoreCommand.sets(sets).aggregateUsing(aggregateFunction).applyWeights(weights).storeAs(destinationKey)))
@@ -1239,12 +1143,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> zRangeByLex(ByteBuffer key, Range<String> range, Limit limit) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRangeByLex(Mono.just(ZRangeByLexCommand.stringsWithin(range).from(key).limitTo(limit))).next()
 				.map(MultiValueResponse::getOutput);
@@ -1272,12 +1172,8 @@ public interface ReactiveZSetCommands {
 	 */
 	default Mono<List<ByteBuffer>> zRevRangeByLex(ByteBuffer key, Range<String> range, Limit limit) {
 
-		try {
-			Assert.notNull(key, "key must not be null");
-			Assert.notNull(range, "range must not be null");
-		} catch (IllegalArgumentException e) {
-			return Mono.error(e);
-		}
+		Assert.notNull(key, "key must not be null");
+		Assert.notNull(range, "range must not be null");
 
 		return zRangeByLex(Mono.just(ZRangeByLexCommand.reverseStringsWithin(range).from(key).limitTo(limit))).next()
 				.map(MultiValueResponse::getOutput);

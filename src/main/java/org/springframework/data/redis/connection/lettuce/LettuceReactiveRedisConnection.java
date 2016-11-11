@@ -23,7 +23,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.redis.connection.*;
-import org.springframework.data.repository.util.QueryExecutionConverters.RxJava1ObservableToMonoConverter;
 import org.springframework.util.Assert;
 
 import com.lambdaworks.redis.AbstractRedisClient;
@@ -45,7 +44,6 @@ import rx.Observable;
  */
 public class LettuceReactiveRedisConnection implements ReactiveRedisConnection {
 
-	private AbstractRedisClient client;
 	private StatefulConnection<ByteBuffer, ByteBuffer> connection;
 
 	private static final RedisCodec<ByteBuffer, ByteBuffer> CODEC = ByteBufferCodec.INSTANCE;
@@ -53,7 +51,6 @@ public class LettuceReactiveRedisConnection implements ReactiveRedisConnection {
 	public LettuceReactiveRedisConnection(AbstractRedisClient client) {
 
 		Assert.notNull(client, "RedisClient must not be null!");
-		this.client = client;
 
 		if (client instanceof RedisClient) {
 			connection = ((RedisClient) client).connect(CODEC);
@@ -157,16 +154,6 @@ public class LettuceReactiveRedisConnection implements ReactiveRedisConnection {
 
 			return Flux.error(throwable);
 		};
-	}
-
-	/**
-	 * just a typed converter to avoid a lot of casting since {@link ObservableToMonoConverter} is untyped.
-	 *
-	 * @return
-	 */
-	static <T> Converter<Observable<?>, Mono<T>> monoConverter() {
-		// TODO: replace this one with conversion service
-		return (Converter<Observable<?>, Mono<T>>) (Converter) RxJava1ObservableToMonoConverter.INSTANCE;
 	}
 
 	interface LettuceReactiveCallback<T> {
